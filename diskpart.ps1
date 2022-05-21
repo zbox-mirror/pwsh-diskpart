@@ -53,23 +53,28 @@ function New-DiskPart() {
   # Sleep time.
   [int]$sleep = 5
 
+  # Disk list.
   Write-Msg -Title -Message "--- Disk List..."
   Get-Disk
   Start-Sleep -s $sleep
 
+  # Clear disk.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM
   Get-Disk
   Start-Sleep -s $sleep
 
+  # Initialize disk.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
   Initialize-Disk -Number $DiskNumber -PartitionStyle GPT
   Start-Sleep -s $sleep
 
+  # Create partition.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
   New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
   Start-Sleep -s $sleep
 
+  # Format disk volume.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
   Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
   Start-Sleep -s $sleep
