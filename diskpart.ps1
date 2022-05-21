@@ -60,7 +60,7 @@ function New-DiskPart() {
 
   # Clear disk.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
-  Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm
+  Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Get-Disk
   Start-Sleep -s $sleep
 
