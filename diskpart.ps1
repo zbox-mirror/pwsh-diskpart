@@ -54,31 +54,43 @@ function New-DiskPart() {
   [int]$sleep = 5
 
   # Disk list.
-  Write-Msg -Title -Message "--- Disk List..."
-  Get-Disk
-  Start-Sleep -s $sleep
+  Start-DiskList
 
   # Clear disk.
-  Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
-  Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
-  Get-Disk
-  Start-Sleep -s $sleep
+  function Start-DiskClear() {
+    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
+    Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
+    Show-DiskList
+    Start-Sleep -s $sleep
+  }
 
   # Initialize disk.
-  Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
-  Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
-  Get-Disk
-  Start-Sleep -s $sleep
+  function Start-DiskInit() {
+    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
+    Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
+    Show-DiskList
+    Start-Sleep -s $sleep
+  }
 
   # Create partition.
-  Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
-  New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
-  Start-Sleep -s $sleep
+  function Start-DiskPartition() {
+    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
+    New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
+    Start-Sleep -s $sleep
+  }
 
   # Format disk volume.
-  Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
-  Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
-  Start-Sleep -s $sleep
+  function Start-DiskFormat() {
+    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
+    Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
+    Show-VolumeList
+    Start-Sleep -s $sleep
+  }
+
+  Start-DiskClear
+  Start-DiskInit
+  Start-DiskPartition
+  Start-DiskFormat
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -95,6 +107,16 @@ function Write-Msg() {
   } else {
     Write-Host "$($Message)"
   }
+}
+
+function Show-DiskList() {
+  Write-Msg -Title -Message "--- Disk List..."
+  Get-Disk
+}
+
+function Show-VolumeList() {
+  Write-Msg -Title -Message "--- Volume List..."
+  Get-Volume
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
