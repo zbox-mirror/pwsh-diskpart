@@ -11,6 +11,7 @@ Param(
     Mandatory,
     HelpMessage="Specifies an array of disk numbers."
   )]
+  [ValidatePattern("^[0-9]+$")]
   [Alias("DN")]
   [int]$DiskNumber,
 
@@ -18,6 +19,7 @@ Param(
     Mandatory,
     HelpMessage="Specifies the specific drive letter to assign to the new partition."
   )]
+  [ValidatePattern("^[A-Z]$")]
   [Alias("DL")]
   [string]$DriveLetter,
 
@@ -25,6 +27,7 @@ Param(
     Mandatory,
     HelpMessage="Specifies the file system with which to format the volume. The acceptable values for this parameter are:NTFS, ReFS, exFAT, FAT32, and FAT."
   )]
+  [ValidateSet("FAT", "FAT32", "exFAT", "NTFS", "ReFS")]
   [Alias("FS")]
   [string]$FileSystem,
 
