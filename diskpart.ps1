@@ -41,63 +41,62 @@ Param(
 # -------------------------------------------------------------------------------------------------------------------- #
 
 function Start-DiskPart() {
+  # Sleep time.
+  [int]$sleep = 5
+
   # Run.
-  New-DiskPart
+  Start-DPDiskList
+  Start-DPDiskClear
+  Start-DPDiskInit
+  Start-DPDiskPartition
+  Start-DPDiskFormat
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # DISK PARTITION.
 # -------------------------------------------------------------------------------------------------------------------- #
 
-function New-DiskPart() {
-  # Sleep time.
-  [int]$sleep = 5
+function Start-DPDiskList() {
+  Show-DPDiskList
+  Start-Sleep -s $sleep
+}
 
-  # Disk list.
-  Start-DiskList
+# Clear disk.
+function Start-DPDiskClear() {
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
+  Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
+  Show-DPDiskList
+  Start-Sleep -s $sleep
+}
 
-  # Clear disk.
-  function Start-DiskClear() {
-    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
-    Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
-    Show-DiskList
-    Start-Sleep -s $sleep
-  }
+# Initialize disk.
+function Start-DPDiskInit() {
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
+  Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
+  Show-DPDiskList
+  Start-Sleep -s $sleep
+}
 
-  # Initialize disk.
-  function Start-DiskInit() {
-    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
-    Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
-    Show-DiskList
-    Start-Sleep -s $sleep
-  }
+# Create partition.
+function Start-DPDiskPartition() {
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
+  New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
+  Start-Sleep -s $sleep
+}
 
-  # Create partition.
-  function Start-DiskPartition() {
-    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
-    New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
-    Start-Sleep -s $sleep
-  }
-
-  # Format disk volume.
-  function Start-DiskFormat() {
-    Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
-    Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
-    Show-VolumeList
-    Start-Sleep -s $sleep
-  }
-
-  Start-DiskClear
-  Start-DiskInit
-  Start-DiskPartition
-  Start-DiskFormat
+# Format disk volume.
+function Start-DPDiskFormat() {
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
+  Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
+  Show-DPVolumeList
+  Start-Sleep -s $sleep
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # ------------------------------------------------< COMMON FUNCTIONS >------------------------------------------------ #
 # -------------------------------------------------------------------------------------------------------------------- #
 
-function Write-Msg() {
+function Write-DPMsg() {
   param (
     [string]$Message,
     [switch]$Title = $false
@@ -109,13 +108,13 @@ function Write-Msg() {
   }
 }
 
-function Show-DiskList() {
-  Write-Msg -Title -Message "--- Disk List..."
+function Show-DPDiskList() {
+  Write-DPMsg -Title -Message "--- Disk List..."
   Get-Disk
 }
 
-function Show-VolumeList() {
-  Write-Msg -Title -Message "--- Volume List..."
+function Show-DPVolumeList() {
+  Write-DPMsg -Title -Message "--- Volume List..."
   Get-Volume
 }
 
