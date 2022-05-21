@@ -53,8 +53,13 @@ function New-DiskPart() {
   # Sleep time.
   [int]$sleep = 5
 
+  Write-Msg -Title -Message "--- Disk List..."
+  Get-Disk
+  Start-Sleep -s $sleep
+
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM
+  Get-Disk
   Start-Sleep -s $sleep
 
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
