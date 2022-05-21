@@ -30,7 +30,7 @@ Param(
 
   [Parameter(
     Mandatory,
-    HelpMessage="Specifies the label to use for the volume."
+    HelpMessage="Specifies a new label to use for the volume."
   )]
   [Alias("FSL")]
   [string]$FileSystemLabel
