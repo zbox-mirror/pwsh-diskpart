@@ -66,7 +66,7 @@ function New-DiskPart() {
 
   # Initialize disk.
   Write-Msg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
-  Initialize-Disk -Number $DiskNumber -PartitionStyle GPT
+  Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
   Start-Sleep -s $sleep
 
   # Create partition.
