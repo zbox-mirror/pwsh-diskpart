@@ -9,28 +9,28 @@
 Param(
   [Parameter(
     Mandatory,
-    HelpMessage=""
+    HelpMessage="Specifies an array of disk numbers."
   )]
   [Alias("DN")]
   [int]$DiskNumber,
 
   [Parameter(
     Mandatory,
-    HelpMessage=""
+    HelpMessage="Specifies the specific drive letter to assign to the new partition."
   )]
   [Alias("DL")]
   [string]$DriveLetter,
 
   [Parameter(
     Mandatory,
-    HelpMessage=""
+    HelpMessage="Specifies the file system with which to format the volume. The acceptable values for this parameter are:NTFS, ReFS, exFAT, FAT32, and FAT."
   )]
   [Alias("FS")]
   [string]$FileSystem,
 
   [Parameter(
     Mandatory,
-    HelpMessage=""
+    HelpMessage="Specifies the label to use for the volume."
   )]
   [Alias("FSL")]
   [string]$FileSystemLabel
