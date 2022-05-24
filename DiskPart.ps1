@@ -59,6 +59,7 @@ function Start-DiskPart() {
 # DISK PARTITION.
 # -------------------------------------------------------------------------------------------------------------------- #
 
+# Disk list.
 function Start-DPDiskList() {
   Show-DPDiskList
   Start-Sleep -s $sleep
