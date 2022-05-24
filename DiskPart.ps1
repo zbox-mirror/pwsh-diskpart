@@ -67,7 +67,7 @@ function Start-DPDiskList() {
 # Clear disk.
 function Start-DPDiskClear() {
   Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
-  Write-Warning "You specified drive '$($DiskNumber)'. All data will be DELETED." -WarningAction Inquire
+  Write-Warning "You specified drive number '$($DiskNumber)' and drive letter '$($DriveLetter)'. All data will be DELETED." -WarningAction Inquire
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
   Start-Sleep -s $sleep
