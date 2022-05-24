@@ -45,7 +45,7 @@ Param(
 
 function Start-DiskPart() {
   # Sleep time.
-  [int]$sleep = 5
+  [int]$sleep = 10
 
   # Run.
   Start-DPDiskList
@@ -61,7 +61,9 @@ function Start-DiskPart() {
 
 function Start-DPDiskList() {
   Show-DPDiskList
+  [string]$confirmation = Read-Host -Prompt "You specified drive $($DiskNumber). Continue? (Enter [Y] to continue)"
   Start-Sleep -s $sleep
+  if ( ! ( $confirmation -match "[yY]" ) ) { exit }
 }
 
 # Clear disk.
