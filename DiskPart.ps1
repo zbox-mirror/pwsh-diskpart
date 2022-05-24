@@ -61,14 +61,13 @@ function Start-DiskPart() {
 
 function Start-DPDiskList() {
   Show-DPDiskList
-  [string]$confirmation = Read-Host -Prompt "You specified drive $($DiskNumber). Continue? (Enter [Y] to continue)"
   Start-Sleep -s $sleep
-  if ( ! ( $confirmation -match "[yY]" ) ) { exit }
 }
 
 # Clear disk.
 function Start-DPDiskClear() {
   Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
+  Write-Warning "You specified drive '$($DiskNumber)'. All data will be DELETED." -WarningAction Inquire
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
   Start-Sleep -s $sleep
@@ -114,12 +113,12 @@ function Write-DPMsg() {
 }
 
 function Show-DPDiskList() {
-  Write-DPMsg -Title -Message "--- Disk List..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Disk List..."
   Get-Disk
 }
 
 function Show-DPVolumeList() {
-  Write-DPMsg -Title -Message "--- Volume List..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Volume List..."
   Get-Volume
 }
 
