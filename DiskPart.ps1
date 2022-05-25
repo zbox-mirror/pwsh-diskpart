@@ -109,6 +109,7 @@ function Write-DPMsg() {
     [string]$Message,
     [switch]$Title = $false
   )
+
   if ( $Title ) {
     Write-Host "$($Message)" -ForegroundColor Blue
   } else {
