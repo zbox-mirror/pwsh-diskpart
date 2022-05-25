@@ -71,6 +71,7 @@ function Start-DPDiskList() {
 # Clear disk.
 function Start-DPDiskClear() {
   Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Clear Disk..."
+
   Write-Warning "You specified drive number '$($DiskNumber)' and drive letter '$($DriveLetter)'. All data will be DELETED." -WarningAction Inquire
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
@@ -80,6 +81,7 @@ function Start-DPDiskClear() {
 # Initialize disk.
 function Start-DPDiskInit() {
   Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Initialize Disk..."
+
   Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
   Start-Sleep -s $sleep
@@ -88,6 +90,7 @@ function Start-DPDiskInit() {
 # Create partition.
 function Start-DPDiskPartition() {
   Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Create Partition..."
+
   New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
   Start-Sleep -s $sleep
 }
@@ -95,6 +98,7 @@ function Start-DPDiskPartition() {
 # Format disk volume.
 function Start-DPDiskFormat() {
   Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
+
   Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
   Show-DPVolumeList
   Start-Sleep -s $sleep
