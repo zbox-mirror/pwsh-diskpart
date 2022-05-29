@@ -70,7 +70,7 @@ function Start-DPDiskList() {
 
 # Clear disk.
 function Start-DPDiskClear() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Clear Disk..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
 
   Write-Warning "You specified drive number '$($DiskNumber)' and drive letter '$($DriveLetter)'. All data will be DELETED." -WarningAction Inquire
   Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
@@ -80,7 +80,7 @@ function Start-DPDiskClear() {
 
 # Initialize disk.
 function Start-DPDiskInit() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Initialize Disk..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
 
   Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
@@ -89,7 +89,7 @@ function Start-DPDiskInit() {
 
 # Create partition.
 function Start-DPDiskPartition() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Create Partition..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
 
   New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
   Start-Sleep -s $sleep
@@ -97,7 +97,7 @@ function Start-DPDiskPartition() {
 
 # Format disk volume.
 function Start-DPDiskFormat() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
 
   Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
   Show-DPVolumeList
@@ -115,19 +115,19 @@ function Write-DPMsg() {
   )
 
   if ( $Title ) {
-    Write-Host "$($Message)" -ForegroundColor Blue
+    Write-Host "$($NL)$($Message)" -ForegroundColor Blue
   } else {
     Write-Host "$($Message)"
   }
 }
 
 function Show-DPDiskList() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Disk List..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Disk List..."
   Get-Disk
 }
 
 function Show-DPVolumeList() {
-  Write-DPMsg -Title -Message "$($NL)--- [DISK $($DiskNumber)] Volume List..."
+  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Volume List..."
   Get-Volume
 }
 
