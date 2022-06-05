@@ -13,7 +13,7 @@ Param(
   )]
   [ValidatePattern("^[0-9]+$")]
   [Alias("DN")]
-  [int]$DiskNumber,
+  [int]$P_DiskNumber,
 
   [Parameter(
     Mandatory,
@@ -21,7 +21,7 @@ Param(
   )]
   [ValidatePattern("^[A-Z]$")]
   [Alias("DL")]
-  [string]$DriveLetter,
+  [string]$P_DriveLetter,
 
   [Parameter(
     Mandatory,
@@ -29,14 +29,14 @@ Param(
   )]
   [ValidateSet("FAT", "FAT32", "exFAT", "NTFS", "ReFS")]
   [Alias("FS")]
-  [string]$FileSystem,
+  [string]$P_FileSystem,
 
   [Parameter(
     Mandatory,
     HelpMessage="Specifies a new label to use for the volume."
   )]
   [Alias("FSL")]
-  [string]$FileSystemLabel
+  [string]$P_FileSystemLabel
 )
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -70,36 +70,36 @@ function Start-DPDiskList() {
 
 # Clear disk.
 function Start-DPDiskClear() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Clear Disk..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Clear Disk..."
 
-  Write-Warning "You specified drive number '$($DiskNumber)' and drive letter '$($DriveLetter)'. All data will be DELETED." -WarningAction Inquire
-  Clear-Disk -Number $DiskNumber -RemoveData -RemoveOEM -Confirm:$false
+  Write-Warning "You specified drive number '$($P_DiskNumber)' and drive letter '$($P_DriveLetter)'. All data will be DELETED." -WarningAction Inquire
+  Clear-Disk -Number $P_DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
   Start-Sleep -s $sleep
 }
 
 # Initialize disk.
 function Start-DPDiskInit() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Initialize Disk..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Initialize Disk..."
 
-  Initialize-Disk -Number $DiskNumber -PartitionStyle "GPT"
+  Initialize-Disk -Number $P_DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
   Start-Sleep -s $sleep
 }
 
 # Create partition.
 function Start-DPDiskPartition() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Create Partition..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Create Partition..."
 
-  New-Partition -DiskNumber $DiskNumber -UseMaximumSize -DriveLetter "$($DriveLetter)"
+  New-Partition -DiskNumber $P_DiskNumber -UseMaximumSize -DriveLetter "$($P_DriveLetter)"
   Start-Sleep -s $sleep
 }
 
 # Format disk volume.
 function Start-DPDiskFormat() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Format Disk Volume ($($DriveLetter) / $($FileSystem))..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Format Disk Volume ($($P_DriveLetter) / $($P_FileSystem))..."
 
-  Format-Volume -DriveLetter "$($DriveLetter)" -FileSystem "$($FileSystem)" -Force -NewFileSystemLabel "$($FileSystemLabel)"
+  Format-Volume -DriveLetter "$($P_DriveLetter)" -FileSystem "$($P_FileSystem)" -Force -NewFileSystemLabel "$($P_FileSystemLabel)"
   Show-DPVolumeList
   Start-Sleep -s $sleep
 }
@@ -122,12 +122,12 @@ function Write-DPMsg() {
 }
 
 function Show-DPDiskList() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Disk List..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Disk List..."
   Get-Disk
 }
 
 function Show-DPVolumeList() {
-  Write-DPMsg -Title -Message "--- [DISK $($DiskNumber)] Volume List..."
+  Write-DPMsg -Title -Message "--- [DISK $($P_DiskNumber)] Volume List..."
   Get-Volume
 }
 
