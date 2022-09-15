@@ -137,12 +137,12 @@ function Write-DPMsg() {
 }
 
 function Show-DPDiskList() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Disk List..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Disk List..."
   Get-Disk
 }
 
 function Show-DPVolumeList() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Volume List..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Volume List..."
   Get-Volume
 }
 
