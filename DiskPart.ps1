@@ -70,7 +70,7 @@ function Start-DPDiskList() {
 
 # Clear disk.
 function Start-DPDiskClear() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Clear Disk..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Clear Disk..."
 
   Write-Warning "You specified drive number '$($P_DiskNumber)' and drive letter '$($P_DriveLetter)'. All data will be DELETED." -WarningAction Inquire
   Clear-Disk -Number $P_DiskNumber -RemoveData -RemoveOEM -Confirm:$false
@@ -80,7 +80,7 @@ function Start-DPDiskClear() {
 
 # Initialize disk.
 function Start-DPDiskInit() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Initialize Disk..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Initialize Disk..."
 
   Initialize-Disk -Number $P_DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
@@ -89,7 +89,7 @@ function Start-DPDiskInit() {
 
 # Create partition.
 function Start-DPDiskPartition() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Create Partition..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Create Partition..."
 
   New-Partition -DiskNumber $P_DiskNumber -UseMaximumSize -DriveLetter "$($P_DriveLetter)"
   Start-Sleep -s $sleep
@@ -97,7 +97,7 @@ function Start-DPDiskPartition() {
 
 # Format disk volume.
 function Start-DPDiskFormat() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Format Disk Volume ($($P_DriveLetter) / $($P_FileSystem))..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Format Disk Volume ($($P_DriveLetter) / $($P_FileSystem))..."
 
   Format-Volume -DriveLetter "$($P_DriveLetter)" -FileSystem "$($P_FileSystem)" -Force -NewFileSystemLabel "$($P_FileSystemLabel)"
   Show-DPVolumeList
@@ -113,23 +113,29 @@ function Write-DPMsg() {
     [Alias("M")]
     [string]$Message,
     [Alias("T")]
-    [switch]$Title = $false
+    [string]$Type = ""
   )
 
-  if ( $Title ) {
-    Write-Host "$($NL)$($Message)" -ForegroundColor Blue
-  } else {
-    Write-Host "$($Message)"
+  switch ( $Type ) {
+    "HL" {
+      Write-Host "$($NL)$($Message)" -ForegroundColor Blue
+    }
+    "Error" {
+      Write-Host "[ERROR] $($Message)" -ForegroundColor Red
+    }
+    default {
+      Write-Host "$($Message)"
+    }
   }
 }
 
 function Show-DPDiskList() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Disk List..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Disk List..."
   Get-Disk
 }
 
 function Show-DPVolumeList() {
-  Write-DPMsg -T -M "--- [DISK $($P_DiskNumber)] Volume List..."
+  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Volume List..."
   Get-Volume
 }
 
