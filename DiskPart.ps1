@@ -23,13 +23,10 @@ Param(
   [Alias("DL")]
   [string]$P_DriveLetter,
 
-  [Parameter(
-    Mandatory,
-    HelpMessage="Specifies the file system with which to format the volume. The acceptable values for this parameter are:NTFS, ReFS, exFAT, FAT32, and FAT."
-  )]
+  [Parameter(HelpMessage="Specifies the file system with which to format the volume. The acceptable values for this parameter are:NTFS, ReFS, exFAT, FAT32, and FAT.")]
   [ValidateSet("FAT", "FAT32", "exFAT", "NTFS", "ReFS")]
   [Alias("FS")]
-  [string]$P_FileSystem,
+  [string]$P_FileSystem = "NTFS",
 
   [Parameter(
     Mandatory,
@@ -70,9 +67,9 @@ function Start-DPDiskList() {
 
 # Clear disk.
 function Start-DPDiskClear() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Clear Disk..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Clear Disk..."
 
-  Write-Warning "You specified drive number '$($P_DiskNumber)' and drive letter '$($P_DriveLetter)'. All data will be DELETED." -WarningAction Inquire
+  Write-DPMsg -T "W" -A "Inquire" -M "You specified drive number '$($P_DiskNumber)' and drive letter '$($P_DriveLetter)'. All data will be DELETED."
   Clear-Disk -Number $P_DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
   Start-Sleep -s $sleep
@@ -80,7 +77,7 @@ function Start-DPDiskClear() {
 
 # Initialize disk.
 function Start-DPDiskInit() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Initialize Disk..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Initialize Disk..."
 
   Initialize-Disk -Number $P_DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
@@ -89,7 +86,7 @@ function Start-DPDiskInit() {
 
 # Create partition.
 function Start-DPDiskPartition() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Create Partition..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Create Partition..."
 
   New-Partition -DiskNumber $P_DiskNumber -UseMaximumSize -DriveLetter "$($P_DriveLetter)"
   Start-Sleep -s $sleep
@@ -97,7 +94,7 @@ function Start-DPDiskPartition() {
 
 # Format disk volume.
 function Start-DPDiskFormat() {
-  Write-DPMsg -T "HL" -M "--- [DISK $($P_DiskNumber)] Format Disk Volume ($($P_DriveLetter) / $($P_FileSystem))..."
+  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Format Disk Volume ($($P_DriveLetter) / $($P_FileSystem))..."
 
   Format-Volume -DriveLetter "$($P_DriveLetter)" -FileSystem "$($P_FileSystem)" -Force -NewFileSystemLabel "$($P_FileSystemLabel)"
   Show-DPVolumeList
@@ -112,16 +109,26 @@ function Write-DPMsg() {
   param (
     [Alias("M")]
     [string]$Message,
+
     [Alias("T")]
-    [string]$Type = ""
+    [string]$Type = "",
+
+    [Alias("A")]
+    [string]$Action = "Continue"
   )
 
   switch ( $Type ) {
     "HL" {
-      Write-Host "$($NL)$($Message)" -ForegroundColor Blue
+      Write-Host "$($NL)--- $($Message)" -ForegroundColor Blue
     }
-    "Error" {
-      Write-Host "[ERROR] $($Message)" -ForegroundColor Red
+    "I" {
+      Write-Information -MessageData "$($Message)" -InformationAction "$($Action)"
+    }
+    "W" {
+      Write-Warning -Message "$($Message)" -WarningAction "$($Action)"
+    }
+    "E" {
+      Write-Error -Message "$($Message)" -ErrorAction "$($Action)"
     }
     default {
       Write-Host "$($Message)"
