@@ -108,10 +108,10 @@ function Start-DPDiskFormat() {
 function Write-DPMsg() {
   param (
     [Alias("M")]
-    [string]$Message = "",
+    [string]$Message,
 
     [Alias("T")]
-    [string]$Type = "",
+    [string]$Type,
 
     [Alias("A")]
     [string]$Action = "Continue"
