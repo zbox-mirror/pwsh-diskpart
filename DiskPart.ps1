@@ -37,17 +37,23 @@ Param(
 )
 
 # -------------------------------------------------------------------------------------------------------------------- #
+# CONFIGURATION.
+# -------------------------------------------------------------------------------------------------------------------- #
+
+# Sleep time.
+[int]$SLEEP = 10
+
+# New line separator.
+$NL = [Environment]::NewLine
+
+# Load functions.
+. "$($PSScriptRoot)\DiskPart.Functions.ps1"
+
+# -------------------------------------------------------------------------------------------------------------------- #
 # INITIALIZATION.
 # -------------------------------------------------------------------------------------------------------------------- #
 
 function Start-DiskPart() {
-  # Sleep time.
-  [int]$sleep = 10
-
-  # New line separator.
-  $NL = [Environment]::NewLine
-
-  # Run.
   Start-DPDiskList
   Start-DPDiskClear
   Start-DPDiskInit
@@ -62,7 +68,7 @@ function Start-DiskPart() {
 # Disk list.
 function Start-DPDiskList() {
   Show-DPDiskList
-  Start-Sleep -s $sleep
+  Start-Sleep -s $SLEEP
 }
 
 # Clear disk.
@@ -72,7 +78,7 @@ function Start-DPDiskClear() {
   Write-DPMsg -T "W" -A "Inquire" -M "You specified drive number '$($P_DiskNumber)' and drive letter '$($P_DriveLetter)'. All data will be DELETED."
   Clear-Disk -Number $P_DiskNumber -RemoveData -RemoveOEM -Confirm:$false
   Show-DPDiskList
-  Start-Sleep -s $sleep
+  Start-Sleep -s $SLEEP
 }
 
 # Initialize disk.
@@ -81,7 +87,7 @@ function Start-DPDiskInit() {
 
   Initialize-Disk -Number $P_DiskNumber -PartitionStyle "GPT"
   Show-DPDiskList
-  Start-Sleep -s $sleep
+  Start-Sleep -s $SLEEP
 }
 
 # Create partition.
@@ -89,7 +95,7 @@ function Start-DPDiskPartition() {
   Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Create Partition..."
 
   New-Partition -DiskNumber $P_DiskNumber -UseMaximumSize -DriveLetter "$($P_DriveLetter)"
-  Start-Sleep -s $sleep
+  Start-Sleep -s $SLEEP
 }
 
 # Format disk volume.
@@ -98,52 +104,7 @@ function Start-DPDiskFormat() {
 
   Format-Volume -DriveLetter "$($P_DriveLetter)" -FileSystem "$($P_FileSystem)" -Force -NewFileSystemLabel "$($P_FileSystemLabel)"
   Show-DPVolumeList
-  Start-Sleep -s $sleep
-}
-
-# -------------------------------------------------------------------------------------------------------------------- #
-# ------------------------------------------------< COMMON FUNCTIONS >------------------------------------------------ #
-# -------------------------------------------------------------------------------------------------------------------- #
-
-function Write-DPMsg() {
-  param (
-    [Alias("M")]
-    [string]$Message,
-
-    [Alias("T")]
-    [string]$Type,
-
-    [Alias("A")]
-    [string]$Action = "Continue"
-  )
-
-  switch ( $Type ) {
-    "HL" {
-      Write-Host "$($NL)--- $($Message)" -ForegroundColor Blue
-    }
-    "I" {
-      Write-Information -MessageData "$($Message)" -InformationAction "$($Action)"
-    }
-    "W" {
-      Write-Warning -Message "$($Message)" -WarningAction "$($Action)"
-    }
-    "E" {
-      Write-Error -Message "$($Message)" -ErrorAction "$($Action)"
-    }
-    default {
-      Write-Host "$($Message)"
-    }
-  }
-}
-
-function Show-DPDiskList() {
-  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Disk List..."
-  Get-Disk
-}
-
-function Show-DPVolumeList() {
-  Write-DPMsg -T "HL" -M "[DISK $($P_DiskNumber)] Volume List..."
-  Get-Volume
+  Start-Sleep -s $SLEEP
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
